@@ -12,6 +12,8 @@
 
 <br/>
 
+Acesse : https://mbraga23.github.io/marcadores/
+
 ## 📖 Sobre o Projeto
 
 O **Marcador de Consumo Alimentar** é uma ferramenta web focada em modernizar o trabalho de Agentes Comunitários de Saúde (ACS), Nutricionistas e profissionais do SUS. Ele digitaliza o formulário oficial do SISVAN (Sistema de Vigilância Alimentar e Nutricional).
