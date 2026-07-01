@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Marcador de Consumo Alimentar — Sistema de registro de consumo alimentar baseado no SISVAN. Acesse ou cadastre-se para iniciar.">
+  <meta name="keywords" content="consumo alimentar, SISVAN, nutrição, marcador alimentar, saúde, alimentação">
+  <meta name="author" content="Marcador Alimentar">
+  <meta name="theme-color" content="#1D9E75">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Marcador de Consumo Alimentar">
+  <meta property="og:description" content="Sistema de registro de consumo alimentar baseado no SISVAN.">
+  <meta property="og:type" content="website">
+
+  <title>Marcador de Consumo Alimentar — Entrar</title>
+
+  <!-- Google Font: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tabler Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <div class="auth-page">
+    <div class="auth-card">
+
+      <!-- Logo -->
+      <div class="auth-logo">
+        <i class="ti ti-salad"></i>
+        <h1>Marcador Alimentar</h1>
+        <p>Consumo Alimentar — SISVAN</p>
+      </div>
+
+      <!-- Tab Switcher -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">Entrar</button>
+        <button class="auth-tab" data-tab="register">Cadastrar</button>
+      </div>
+
+      <!-- Message Area -->
+      <div id="authMessage" class="auth-message"></div>
+
+      <!-- Login Form -->
+      <form id="loginForm" class="auth-form active" novalidate>
+        <div class="auth-field">
+          <label for="loginEmail">E-mail</label>
+          <input type="email" id="loginEmail" placeholder="seu@email.com" required autocomplete="email">
+        </div>
+        <div class="auth-field">
+          <label for="loginPassword">Senha</label>
+          <input type="password" id="loginPassword" placeholder="Sua senha" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="auth-btn" id="loginBtn">
+          <div class="spinner"></div>
+          <span>Entrar</span>
+        </button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="registerForm" class="auth-form" novalidate>
+        <div class="auth-field">
+          <label for="registerName">Nome completo</label>
+          <input type="text" id="registerName" placeholder="Seu nome" required autocomplete="name">
+        </div>
+        <div class="auth-field">
+          <label for="registerEmail">E-mail</label>
+          <input type="email" id="registerEmail" placeholder="seu@email.com" required autocomplete="email">
+        </div>
+        <div class="auth-field">
+          <label for="registerPassword">Senha</label>
+          <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres" required autocomplete="new-password" minlength="6">
+        </div>
+        <button type="submit" class="auth-btn" id="registerBtn">
+          <div class="spinner"></div>
+          <span>Criar conta</span>
+        </button>
+      </form>
+
+      <!-- Footer -->
+      <div class="auth-footer">
+        © 2026 Marcador de Consumo Alimentar · SISVAN
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      initAuthPage();
+    });
+  </script>
+
+</body>
+</html>
