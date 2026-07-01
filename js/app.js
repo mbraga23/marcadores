@@ -435,20 +435,29 @@ async function excluirGrupo(grupoId, event) {
 
 function renderHistorico() {
   const container = document.getElementById('historico');
+  const searchText = (document.getElementById('filter-text')?.value || '').toLowerCase();
+  const filterMonth = document.getElementById('filter-month')?.value || '';
 
-  if (registros.length === 0) {
+  // Apply filters
+  const filteredRegistros = registros.filter(r => {
+    const matchText = r.familia.toLowerCase().includes(searchText);
+    const matchMonth = filterMonth ? getMesFromDate(r.created_at) === filterMonth : true;
+    return matchText && matchMonth;
+  });
+
+  if (filteredRegistros.length === 0) {
     container.innerHTML = `
       <div class="empty-state">
         <i class="ti ti-clipboard-off"></i>
-        <p>Nenhuma avaliação registrada.<br>Comece criando uma nova avaliação!</p>
+        <p>Nenhuma avaliação encontrada.</p>
       </div>`;
-    updateStats();
+    updateStats(filteredRegistros);
     return;
   }
 
   // Group by grupo_id
   const groups = {};
-  registros.forEach(r => {
+  filteredRegistros.forEach(r => {
     if (!groups[r.grupo_id]) groups[r.grupo_id] = [];
     groups[r.grupo_id].push(r);
   });
@@ -507,7 +516,7 @@ function renderHistorico() {
   });
 
   container.innerHTML = h;
-  updateStats();
+  updateStats(filteredRegistros);
 }
 
 function toggleGrupo(grupoId) {
@@ -515,17 +524,36 @@ function toggleGrupo(grupoId) {
   if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
 }
 
-function updateStats() {
-  const total = registros.length;
-  const lancadas = registros.filter(r => r.lancada).length;
-  const familias = new Set(registros.map(r => r.grupo_id)).size;
+function updateStats(filteredList = registros) {
+  const total = filteredList.length;
+  const lancadas = filteredList.filter(r => r.lancada).length;
+  const familias = new Set(filteredList.map(r => r.grupo_id)).size;
   const mesAtual = getMes();
-  const mesFichas = registros.filter(r => getMesFromDate(r.created_at) === mesAtual).length;
+  const mesFichas = filteredList.filter(r => getMesFromDate(r.created_at) === mesAtual).length;
 
   document.getElementById('st-total').textContent = total;
   document.getElementById('st-lancadas').textContent = lancadas;
   document.getElementById('st-familias').textContent = familias;
   document.getElementById('st-mes').textContent = mesFichas;
+}
+
+function populateMonthFilter() {
+  const select = document.getElementById('filter-month');
+  if (!select) return;
+  
+  const months = new Set(registros.map(r => getMesFromDate(r.created_at)));
+  
+  // Keep the first default option
+  const defaultOption = select.options[0];
+  select.innerHTML = '';
+  select.appendChild(defaultOption);
+  
+  Array.from(months).forEach(month => {
+    const opt = document.createElement('option');
+    opt.value = month;
+    opt.textContent = month;
+    select.appendChild(opt);
+  });
 }
 
 // ══════════════════════════════════════════════════════════════════════
@@ -600,6 +628,7 @@ async function loadRegistros() {
     if (error) throw error;
 
     registros = data || [];
+    populateMonthFilter();
   } catch (err) {
     console.error('Erro ao carregar dados:', err);
     showToast('Erro ao carregar dados');
