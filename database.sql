@@ -22,23 +22,41 @@ CREATE TABLE avaliacoes (
 -- 2. Habilitar Row Level Security
 ALTER TABLE avaliacoes ENABLE ROW LEVEL SECURITY;
 
--- 3. Políticas de acesso (cada usuário só acessa seus dados)
-CREATE POLICY "select_own" ON avaliacoes
-  FOR SELECT TO authenticated
-  USING (auth.uid() = user_id);
+-- 3. Acesso compartilhado pelos dois perfis do aplicativo.
+-- AVISO: a escolha de perfil não autentica a identidade da pessoa.
+GRANT SELECT, INSERT, UPDATE, DELETE ON avaliacoes TO anon;
 
-CREATE POLICY "insert_own" ON avaliacoes
-  FOR INSERT TO authenticated
-  WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "select_shared_profiles" ON avaliacoes
+  FOR SELECT TO anon
+  USING (user_id IN (
+    'b4d5b1a2-a7e7-47ad-9f2a-b6b1abede8af'::uuid,
+    'db66d658-c489-41a0-8f00-0c3831e10742'::uuid
+  ));
 
-CREATE POLICY "update_own" ON avaliacoes
-  FOR UPDATE TO authenticated
-  USING (auth.uid() = user_id)
-  WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "insert_shared_profiles" ON avaliacoes
+  FOR INSERT TO anon
+  WITH CHECK (user_id IN (
+    'b4d5b1a2-a7e7-47ad-9f2a-b6b1abede8af'::uuid,
+    'db66d658-c489-41a0-8f00-0c3831e10742'::uuid
+  ));
 
-CREATE POLICY "delete_own" ON avaliacoes
-  FOR DELETE TO authenticated
-  USING (auth.uid() = user_id);
+CREATE POLICY "update_shared_profiles" ON avaliacoes
+  FOR UPDATE TO anon
+  USING (user_id IN (
+    'b4d5b1a2-a7e7-47ad-9f2a-b6b1abede8af'::uuid,
+    'db66d658-c489-41a0-8f00-0c3831e10742'::uuid
+  ))
+  WITH CHECK (user_id IN (
+    'b4d5b1a2-a7e7-47ad-9f2a-b6b1abede8af'::uuid,
+    'db66d658-c489-41a0-8f00-0c3831e10742'::uuid
+  ));
+
+CREATE POLICY "delete_shared_profiles" ON avaliacoes
+  FOR DELETE TO anon
+  USING (user_id IN (
+    'b4d5b1a2-a7e7-47ad-9f2a-b6b1abede8af'::uuid,
+    'db66d658-c489-41a0-8f00-0c3831e10742'::uuid
+  ));
 
 -- 4. Índices para performance
 CREATE INDEX idx_avaliacoes_user    ON avaliacoes(user_id);
