@@ -2,8 +2,8 @@
 // Marcador de Consumo Alimentar — App Logic
 // ══════════════════════════════════════════════════════════════════════
 
-let registros = [];      // Local cache of all user's avaliacoes
-let currentUser = null;  // Current authenticated user
+let registros = [];         // Local cache of the selected profile's avaliacoes
+let currentProfile = null;  // Profile selected on index.html
 
 // ── Helpers ───────────────────────────────────────────────────────────
 
@@ -282,7 +282,7 @@ async function salvar() {
     const respostas = capturarRespostas(i, faixa);
 
     rows.push({
-      user_id: currentUser.id,
+      user_id: currentProfile.id,
       grupo_id: grupoId,
       familia: familia,
       pessoa_nome: nome || null,
@@ -343,6 +343,7 @@ async function toggleLancada(id) {
     const { data, error } = await db.from('avaliacoes')
       .update({ lancada: newVal })
       .eq('id', id)
+      .eq('user_id', currentProfile.id)
       .select();
 
     if (error) throw error;
@@ -388,7 +389,10 @@ async function excluirFicha(id) {
     `Deseja excluir "${nome}"? Esta ação não pode ser desfeita.`,
     async () => {
       try {
-        const { error } = await db.from('avaliacoes').delete().eq('id', id);
+        const { error } = await db.from('avaliacoes')
+          .delete()
+          .eq('id', id)
+          .eq('user_id', currentProfile.id);
         if (error) throw error;
 
         registros = registros.filter(r => r.id !== id);
@@ -414,7 +418,10 @@ async function excluirGrupo(grupoId, event) {
     `Deseja excluir todas as ${grupoRegistros.length} fichas de "${familia}"? Esta ação não pode ser desfeita.`,
     async () => {
       try {
-        const { error } = await db.from('avaliacoes').delete().eq('grupo_id', grupoId);
+        const { error } = await db.from('avaliacoes')
+          .delete()
+          .eq('grupo_id', grupoId)
+          .eq('user_id', currentProfile.id);
         if (error) throw error;
 
         registros = registros.filter(r => r.grupo_id !== grupoId);
@@ -623,6 +630,7 @@ async function loadRegistros() {
   try {
     const { data, error } = await db.from('avaliacoes')
       .select('*')
+      .eq('user_id', currentProfile.id)
       .order('created_at', { ascending: false });
 
     if (error) throw error;
@@ -642,11 +650,11 @@ async function loadRegistros() {
 
 async function initApp() {
   try {
-    currentUser = await requireAuth();
-    if (!currentUser) return; // requireAuth redirects if not logged in
+    currentProfile = requireProfile();
+    if (!currentProfile) return;
 
-    // Display user email
-    document.getElementById('user-email').textContent = currentUser.email || '';
+    // Display selected profile
+    document.getElementById('user-profile').textContent = currentProfile.name;
 
     // Load data from Supabase
     await loadRegistros();
