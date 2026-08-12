@@ -21,7 +21,7 @@ O **Marcador de Consumo Alimentar** é uma ferramenta web focada em modernizar o
 Diferente de planilhas e papéis, este sistema funciona como um aplicativo em qualquer celular ou computador, salva os dados na nuvem instantaneamente, e separa as fichas por família e faixa etária de forma inteligente.
 
 ### 🌟 Principais Vantagens
-- **Múltiplos Usuários:** Sistema de login seguro. O usuário A nunca tem acesso aos dados do usuário B.
+- **Perfis rápidos:** escolha entre Marcelo e Mariana Aires sem digitar e-mail ou senha.
 - **Formulários Dinâmicos:** As perguntas mudam automaticamente se a pessoa tem *menos de 6 meses*, *6 a 23 meses* ou *mais de 2 anos*.
 - **Controle de Produtividade:** Acompanhe quantas fichas você lançou este mês no sistema oficial.
 - **Exportação Fácil:** Exporte todos os dados consolidados para Excel (CSV) com 1 clique.
@@ -34,7 +34,7 @@ Este projeto foi construído focado em leveza, performance e facilidade de hospe
 
 * **Frontend:** HTML5, CSS3, JavaScript (Vanilla / Sem frameworks)
 * **Backend & Banco de Dados:** [Supabase](https://supabase.com) (PostgreSQL)
-* **Autenticação:** Supabase Auth (Com encriptação segura e Row Level Security)
+* **Acesso:** seleção direta de perfil, com dados separados no aplicativo por UUID e RLS no Supabase
 * **Ícones:** [Tabler Icons](https://tabler.io/)
 * **Tipografia:** [Google Fonts - Inter](https://fonts.google.com/specimen/Inter)
 
@@ -79,11 +79,8 @@ Você tem duas ótimas opções gratuitas:
 3. Selecione o repositório do `marcador-consumo`.
 4. Clique em **Deploy**. Pronto! O site está no ar com HTTPS.
 
-### Passo 4: Autorizar a URL no Supabase (MUITO IMPORTANTE)
-Para que o login funcione, o Supabase precisa saber que o seu site é seguro.
-1. No painel do Supabase, vá em **Authentication** → **URL Configuration**.
-2. Em **Site URL**, cole o link do seu site que acabou de ser publicado (Ex: `https://meu-marcador.vercel.app`).
-3. (Opcional, mas recomendado) Vá em **Authentication** → **Providers** → **Email** e desmarque "Confirm email" se quiser que os usuários consigam acessar logo após o cadastro sem precisar confirmar o email.
+### Passo 4: Perfis compartilhados
+Esta versão não usa login. A pessoa escolhe um dos dois perfis na tela inicial. Isso é mais rápido, mas significa que qualquer visitante com o endereço do site consegue abrir ambos os perfis.
 
 ---
 
@@ -95,13 +92,13 @@ Para que o login funcione, o Supabase precisa saber que o seu site é seguro.
  ┃ ┗ 📜 styles.css           # Todo o visual incrível da plataforma
  ┣ 📂 js
  ┃ ┣ 📜 app.js               # A lógica pesada: Salvar, Ler, Excluir fichas
- ┃ ┣ 📜 auth.js              # Cuidando da segurança e login do usuário
+ ┃ ┣ 📜 auth.js              # Seleção e troca do perfil ativo
  ┃ ┣ 📜 export.js            # Lógica para converter dados em CSV e JSON
  ┃ ┣ 📜 questions.js         # Banco de perguntas do SISVAN
  ┃ ┗ 📜 supabase-config.js   # Arquivo de conexão com a nuvem
- ┣ 📜 app.html               # Tela principal (Protegida por senha)
+ ┣ 📜 app.html               # Tela principal do perfil escolhido
  ┣ 📜 database.sql           # Script que monta o banco de dados
- ┣ 📜 index.html             # Tela inicial de Login / Cadastro
+ ┣ 📜 index.html             # Tela inicial de seleção de perfil
  ┗ 📜 README.md              # Este manual maravilhoso!
 ```
 
